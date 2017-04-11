@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/img_game"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:padding="16dp"
+        android:src="@mipmap/ic_launcher_round" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_game_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Game Name"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/tv_cateogry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:padding="8dp"
+            android:text="Game Category" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_rating"
+        android:padding="16dp"
+        android:text="5.5/10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
