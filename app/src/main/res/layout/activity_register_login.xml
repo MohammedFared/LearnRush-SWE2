@@ -112,10 +112,11 @@
     </ScrollView>
 
     <TextView
+        android:id="@+id/tv_login_signup_switch"
         android:padding="16dp"
         android:gravity="center"
         android:textColor="@color/colorPrimary"
-        android:text="Already A member? Login."
+        android:text="@string/login_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"

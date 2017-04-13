@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.learnrush.presenter.RegisterInterFace;
 import com.learnrush.presenter.SignupAndLoginPresenter;
@@ -14,6 +15,7 @@ public class RegisterLoginActivity extends AppCompatActivity implements View.OnC
 
     private EditText emailEditText, passwordEditText, nameEditText, phoneEditText, ageEditText;
     private Button btn_register;
+    private TextView switchSignupandLoginTextView;
 
     private String email, password, name, phone, age;
 
@@ -38,7 +40,9 @@ public class RegisterLoginActivity extends AppCompatActivity implements View.OnC
         btn_register = (Button) findViewById(R.id.btn_signup);
         btn_register.setOnClickListener(this);
 
-        mSignupPresenter = new SignupAndLoginPresenter(view);
+        switchSignupandLoginTextView = (TextView) findViewById(R.id.tv_login_signup_switch);
+
+        mSignupPresenter = new SignupAndLoginPresenter(view, this);
         mSignupPresenter.onCreate();
         mRegisterInterFace = mSignupPresenter;
     }
@@ -73,11 +77,13 @@ public class RegisterLoginActivity extends AppCompatActivity implements View.OnC
             nameEditText.setVisibility(View.GONE);
             phoneEditText.setVisibility(View.GONE);
             ageEditText.setVisibility(View.GONE);
+            switchSignupandLoginTextView.setText(R.string.register_message);
             btn_register.setText("LOGIN");
         } else {
             nameEditText.setVisibility(View.VISIBLE);
             phoneEditText.setVisibility(View.VISIBLE);
             ageEditText.setVisibility(View.VISIBLE);
+            switchSignupandLoginTextView.setText(R.string.login_message);
             btn_register.setText("SIGNUP");
         }
     }

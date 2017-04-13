@@ -19,7 +19,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".Home" />
-        <activity android:name=".GameDetails"></activity>
+        <activity android:name=".GameDetails" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".addGame"></activity>
     </application>
 
 </manifest>

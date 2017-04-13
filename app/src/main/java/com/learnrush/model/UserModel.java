@@ -21,6 +21,9 @@ public class UserModel {
     private int phone;
     private boolean isTeacher;
 
+    public UserModel() {
+    }
+
     public UserModel(String mail, String name, int phone, int age, boolean isTeacher) {
         this.name = name;
         this.mail = mail;

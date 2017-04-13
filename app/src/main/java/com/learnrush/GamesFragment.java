@@ -2,14 +2,18 @@ package com.learnrush;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,19 +22,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.learnrush.model.GamesModel;
-import com.learnrush.presenter.GamesPresenterImpl;
-
-import static com.learnrush.presenter.GamesPresenterImpl.CLICKED_GAME_KEY;
+import com.learnrush.presenter.GamesPresenter;
+import com.learnrush.presenter.GamesViewHolder;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link GamesFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link GamesFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class GamesFragment extends Fragment implements GamesPresenterImpl.GamePresenter {
+public class GamesFragment extends Fragment {
     private View mView;
 
     private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -39,34 +40,20 @@ public class GamesFragment extends Fragment implements GamesPresenterImpl.GamePr
 
     private OnFragmentInteractionListener mListener;
     private FirebaseRecyclerAdapter mGamesAdapter;
-    private GamesPresenterImpl mGamesPresenter;
     private String TAG = "GamesFragmentLOG";
+    private static FloatingActionButton fab;
+    static String CLICKED_GAME_KEY = "game_key";
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Query mQuery;
 
     public GamesFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GamesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static GamesFragment newInstance(String param1, String param2) {
-        GamesFragment fragment = new GamesFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -74,6 +61,10 @@ public class GamesFragment extends Fragment implements GamesPresenterImpl.GamePr
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mView =inflater.inflate(R.layout.fragment_games, container, false);
+
+        fab = (FloatingActionButton) mView.findViewById(R.id.fab);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.swipe_refresh_layout);
+
         mRecycler = (RecyclerView) mView.findViewById(R.id.rv_games);
         mRecycler.setHasFixedSize(true);
         return mView;
@@ -83,7 +74,9 @@ public class GamesFragment extends Fragment implements GamesPresenterImpl.GamePr
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        FirebaseRecyclerAdapter<GamesModel, GamesPresenterImpl.GamesViewHolder> mAdapter;
+        GamesPresenter mGamesPresenter = new GamesPresenter(mListener, mView);
+        mListener = mGamesPresenter;
+        FirebaseRecyclerAdapter<GamesModel, GamesViewHolder> mAdapter;
 
         // Set up Layout Manager, reverse layout
         mManager = new LinearLayoutManager(getActivity());
@@ -94,12 +87,32 @@ public class GamesFragment extends Fragment implements GamesPresenterImpl.GamePr
 
         mRecycler.setLayoutManager(mManager);
 
-        Query query = mDatabase.child("games");
-        mAdapter = new FirebaseRecyclerAdapter<GamesModel, GamesPresenterImpl.GamesViewHolder>
-                (GamesModel.class, R.layout.single_game_item, GamesPresenterImpl.GamesViewHolder.class, query) {
+        // Fetches the data from the firebase DataBase
+        mQuery = mDatabase.child("games");
+        getGames(mQuery);
+
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            protected void populateViewHolder(GamesPresenterImpl.GamesViewHolder viewHolder, GamesModel model, int position) {
-//                Utils.hideProgressDialog();
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), addGame.class));
+            }
+        });
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getGames(mQuery);
+            }
+        });
+    }
+
+    private void getGames(final Query query) {
+        FirebaseRecyclerAdapter<GamesModel, GamesViewHolder> mAdapter;
+        mSwipeRefreshLayout.setRefreshing(true);
+        mAdapter = new FirebaseRecyclerAdapter<GamesModel, GamesViewHolder>
+                (GamesModel.class, R.layout.single_game_item, GamesViewHolder.class, query) {
+            @Override
+            protected void populateViewHolder(GamesViewHolder viewHolder, GamesModel model, int position) {
+                mSwipeRefreshLayout.setRefreshing(false);
                 Log.d(TAG, "populateViewHolder: ");
                 // On Game Item Click, Go to game Details
                 final DatabaseReference clickedGameRef = getRef(position);
@@ -112,33 +125,46 @@ public class GamesFragment extends Fragment implements GamesPresenterImpl.GamePr
                         mView.getContext().startActivity(intent);
                     }
                 });
+                // sets the values to the UI
                 viewHolder.bindViewHolder(model);
-//                mGamePresenter.OnAdapterLoaded(mAdapter);
             }
         };
         mRecycler.setAdapter(mAdapter);
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.games, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_logout){
+            mListener.onLogOut();
+            getActivity().finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public static void showAddGameFAB(){
+        fab.setVisibility(View.VISIBLE);
+    }
+
+    public static void hideAddGameFAB(){
+        fab.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void OnAdapterLoaded(FirebaseRecyclerAdapter adapter) {
-        mRecycler.setAdapter(adapter);
     }
 
     /**
@@ -152,7 +178,6 @@ public class GamesFragment extends Fragment implements GamesPresenterImpl.GamePr
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onLogOut();
     }
 }
