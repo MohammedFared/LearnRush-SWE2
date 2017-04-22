@@ -1,0 +1,47 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="com.learnrush.addgame.view.fragments.AddMatchPictureQuestionsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/img_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/image_question" />
+
+        <ImageView
+            android:id="@+id/img_answer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/image_answer" />
+
+        <Button
+            android:id="@+id/btn_add_another_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:padding="16dp"
+            android:text="Add another question"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btn_add_question_done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:padding="16dp"
+            android:text="Add another question"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>

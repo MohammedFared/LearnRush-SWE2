@@ -1,4 +1,4 @@
-package com.learnrush.presenter;
+package com.learnrush.loginandregister.presenter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,23 +22,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.learnrush.Home;
-import com.learnrush.model.UserModel;
+import com.learnrush.Utils;
+import com.learnrush.gamesList.view.Home;
+import com.learnrush.loginandregister.model.UserModel;
+import com.learnrush.loginandregister.view.IView;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.learnrush.presenter.Utils.MY_PREFS_NAME;
-import static com.learnrush.presenter.Utils.USERSHAREDPREFS;
-import static com.learnrush.presenter.Utils.getUserData;
-import static com.learnrush.presenter.Utils.hideProgressDialog;
-import static com.learnrush.presenter.Utils.isEmpty;
-import static com.learnrush.presenter.Utils.showProgressDialog;
-import static com.learnrush.presenter.Utils.user;
+import static android.text.TextUtils.isEmpty;
+import static com.learnrush.Utils.MY_PREFS_NAME;
+import static com.learnrush.Utils.USERSHAREDPREFS;
+import static com.learnrush.Utils.getUserData;
+import static com.learnrush.Utils.user;
 
 /**
  * LearnRush Created by Mohammed Fareed on 4/9/2017.
  */
 
-public class SignupAndLoginPresenter implements RegisterInterFace {
+public class RegisterAndLoginPresenter implements IRegisterAndLoginPresenter {
     private final Context mContext;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -50,11 +50,13 @@ public class SignupAndLoginPresenter implements RegisterInterFace {
     private String TAG = "SignupPresenterLOG";
 
     View mView;
+    IView mIView;
     private String TEACHEREMAIL = "@teacher.com";
 
-    public SignupAndLoginPresenter(View signUpView, Context context) {
+    public RegisterAndLoginPresenter(View signUpView, IView iView) {
         mView = signUpView;
-        mContext = context;
+        mContext = signUpView.getContext();
+        this.mIView = iView;
     }
 
     @Override
@@ -107,6 +109,7 @@ public class SignupAndLoginPresenter implements RegisterInterFace {
     @Override
     public void onStart() {
         mAuth.addAuthStateListener(mAuthListener);
+        Log.d(TAG, "onStart: ");
     }
 
     @Override
@@ -119,7 +122,7 @@ public class SignupAndLoginPresenter implements RegisterInterFace {
     @Override
     public void onButtonClick(String mail, String password, String name, String phone, String age, boolean isLogin) {
         if (!((Activity) mContext).isFinishing()) // So it won't crash if the activity is already finishing
-            showProgressDialog(mContext, "Logging in...");
+            mIView.showProgressDialog("Logging in...");
         if (!isLogin) // if he is logging in
             createUserWithEmailAndPassword(mail, password, name, phone, age);
         else // if he is signing up
@@ -147,11 +150,11 @@ public class SignupAndLoginPresenter implements RegisterInterFace {
                                 addUserToFirebaseDataBase(email, password, name, phone, age);
                                 sendVerificationEmail();
                             }
-                            hideProgressDialog();
+                            mIView.hideProgressDialog();
                         }
                     });
         else
-            hideProgressDialog();
+            mIView.hideProgressDialog();
     }
 
     public void sendVerificationEmail() {
@@ -168,7 +171,6 @@ public class SignupAndLoginPresenter implements RegisterInterFace {
                         }
                     });
         }
-
     }
     private boolean isValidRegister(String email, String password, String name, String phone, String age) {
         if (isEmpty(email)) {
@@ -213,11 +215,11 @@ public class SignupAndLoginPresenter implements RegisterInterFace {
                             else {
                                 // TODO: Add intent to the new activity
                             }
-                            hideProgressDialog();
+                            mIView.hideProgressDialog();
                         }
                     });
         else
-            hideProgressDialog();
+            mIView.hideProgressDialog();
     }
 
     private boolean isValidLogin(String email, String password) {

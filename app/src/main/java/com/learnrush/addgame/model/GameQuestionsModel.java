@@ -1,16 +1,16 @@
-package com.learnrush.model;
+package com.learnrush.addgame.model;
 
 /**
  * LearnRush Created by Mohammed Fareed on 4/13/2017.
  */
 
-public class GameQuestions {
+public class GameQuestionsModel {
     private String question, answer;
 
-    public GameQuestions() {
+    public GameQuestionsModel() {
     }
 
-    public GameQuestions(String question, String answer) {
+    public GameQuestionsModel(String question, String answer) {
         this.question = question;
         this.answer = answer;
     }

@@ -1,5 +1,6 @@
-package com.learnrush;
+package com.learnrush.loginandregister.view;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -7,11 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.learnrush.presenter.RegisterInterFace;
-import com.learnrush.presenter.SignupAndLoginPresenter;
+import com.learnrush.R;
+import com.learnrush.loginandregister.presenter.IRegisterAndLoginPresenter;
+import com.learnrush.loginandregister.presenter.RegisterAndLoginPresenter;
 
-public class RegisterLoginActivity extends AppCompatActivity implements View.OnClickListener {
-    private String TAG = "SignUpLOG";
+public class RegisterLoginActivity extends AppCompatActivity implements View.OnClickListener, IView {
+    private String TAG = "RegisterLoginActivityLOG";
 
     private EditText emailEditText, passwordEditText, nameEditText, phoneEditText, ageEditText;
     private Button btn_register;
@@ -19,8 +21,7 @@ public class RegisterLoginActivity extends AppCompatActivity implements View.OnC
 
     private String email, password, name, phone, age;
 
-    RegisterInterFace mRegisterInterFace;
-    SignupAndLoginPresenter mSignupPresenter;
+    IRegisterAndLoginPresenter mIRegisterAndLogin;
 
     private boolean isLogin = false;
 
@@ -30,6 +31,9 @@ public class RegisterLoginActivity extends AppCompatActivity implements View.OnC
         setContentView(R.layout.activity_register_login);
 
         View view = findViewById(R.id.ll_signup_container);
+
+        mIRegisterAndLogin = new RegisterAndLoginPresenter(view, this);
+        mIRegisterAndLogin.onCreate();
 
         emailEditText = (EditText) findViewById(R.id.et_email);
         passwordEditText = (EditText) findViewById(R.id.et_password);
@@ -41,23 +45,19 @@ public class RegisterLoginActivity extends AppCompatActivity implements View.OnC
         btn_register.setOnClickListener(this);
 
         switchSignupandLoginTextView = (TextView) findViewById(R.id.tv_login_signup_switch);
-
-        mSignupPresenter = new SignupAndLoginPresenter(view, this);
-        mSignupPresenter.onCreate();
-        mRegisterInterFace = mSignupPresenter;
     }
 
 
     @Override
     public void onStart() {
         super.onStart();
-        mRegisterInterFace.onStart();
+        mIRegisterAndLogin.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mRegisterInterFace.onStop();
+        mIRegisterAndLogin.onStop();
         finish();
     }
 
@@ -68,7 +68,7 @@ public class RegisterLoginActivity extends AppCompatActivity implements View.OnC
         name = nameEditText.getText().toString();
         phone = phoneEditText.getText().toString();
         age = ageEditText.getText().toString();
-        mRegisterInterFace.onButtonClick(email, password, name, phone, age, isLogin);
+        mIRegisterAndLogin.onButtonClick(email, password, name, phone, age, isLogin);
     }
 
     public void tv_loginClick(View view) {
@@ -88,5 +88,22 @@ public class RegisterLoginActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    private ProgressDialog mProgressDialog;
 
+    @Override
+    public void showProgressDialog(String message) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(message);
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
+    }
+    @Override
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
 }

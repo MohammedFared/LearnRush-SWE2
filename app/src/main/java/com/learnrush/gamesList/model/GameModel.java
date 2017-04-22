@@ -1,22 +1,31 @@
-package com.learnrush.model;
+package com.learnrush.gamesList.model;
 
 /**
  * LearnRush Created by Mohammed Fareed on 4/13/2017.
  */
 
 public class GameModel {
-    private String teacher_id, cateogry, game_name;
+    private String teacher_id, game_cateogry, game_name, game_desc, image;
     private int rate_count, rating;
 
     public GameModel() {
     }
 
-    public GameModel(String teacher_id, String cateogry, String game_name, int rate_count, int rating) {
+    public GameModel(String teacher_id, String game_cateogry, String game_name,
+                     String game_desc, int rate_count, int rating, String image) {
         this.teacher_id = teacher_id;
-        this.cateogry = cateogry;
+        this.game_cateogry = game_cateogry;
         this.game_name = game_name;
         this.rate_count = rate_count;
         this.rating = rating;
+        this.game_cateogry = game_cateogry;
+    }
+
+    public GameModel(String game_name, String game_cateogry, String game_desc, String image){
+        this.game_cateogry = game_cateogry;
+        this.game_name = game_name;
+        this.game_desc = game_desc;
+        this.image = image;
     }
 
     public String getTeacher_id() {
@@ -27,12 +36,12 @@ public class GameModel {
         this.teacher_id = teacher_id;
     }
 
-    public String getCateogry() {
-        return cateogry;
+    public String getGame_cateogry() {
+        return game_cateogry;
     }
 
-    public void setCateogry(String cateogry) {
-        this.cateogry = cateogry;
+    public void setGame_cateogry(String game_cateogry) {
+        this.game_cateogry = game_cateogry;
     }
 
     public String getGame_name() {

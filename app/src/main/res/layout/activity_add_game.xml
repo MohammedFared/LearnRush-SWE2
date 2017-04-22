@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.learnrush.AddGame">
+    android:orientation="vertical"
+    tools:context="com.learnrush.addgame.view.AddGame">
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tv_questions_counter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/questions_counter_text"
+        android:textSize="12sp" />
+
+    <FrameLayout
+        android:id="@+id/add_game_fragment_container"
+        android:name="com.learnrush.view.fragments.AddGameDetailsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/fragment_add_game_details" />
+
+    <Button
+        android:visibility="gone"
+        android:id="@+id/btn_done"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Add Game"
+        android:textColor="@android:color/white" />
+</LinearLayout>

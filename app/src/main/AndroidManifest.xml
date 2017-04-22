@@ -11,20 +11,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegisterLoginActivity">
+        <activity android:name=".loginandregister.view.RegisterLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Home" />
-        <activity android:name=".GameDetails" />
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AddGame"></activity>
+        <activity android:name=".gamesList.view.Home" />
+        <activity android:name=".gamesList.view.GameDetails" />
+        <activity android:name=".addgame.view.AddGame" />
+        <activity android:name=".gameplay.view.GamePlay"></activity>
     </application>
 
 </manifest>
