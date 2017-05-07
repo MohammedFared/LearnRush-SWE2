@@ -1,6 +1,7 @@
 package com.learnrush.gamesList.view;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.learnrush.R;
 import com.learnrush.addgame.model.GameModel;
+import com.learnrush.gameplay.view.GamePlay;
 import com.learnrush.gamesList.presenter.GameDetailsPresenterImpl;
 import com.learnrush.gamesList.presenter.GamesPresenter;
 import com.learnrush.gamesList.presenter.IGameDetailsPresenter;
@@ -47,6 +49,7 @@ public class GameDetails extends AppCompatActivity implements IGameDetailsView{
 
 
     DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+
     public void getGameDetails(String gameKey) {
         mRef.child("games").child(gameKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -76,6 +79,6 @@ public class GameDetails extends AppCompatActivity implements IGameDetailsView{
     }
 
     public void onPlayGame(View view) {
-
+        startActivity(new Intent(this, GamePlay.class));
     }
 }

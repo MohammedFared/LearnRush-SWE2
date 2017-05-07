@@ -5,4 +5,5 @@ package com.learnrush.gameplay.view;
  */
 
 public interface IGamePlayView {
+    void startNextQuestion();
 }
