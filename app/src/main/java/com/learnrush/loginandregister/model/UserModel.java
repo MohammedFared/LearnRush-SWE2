@@ -1,4 +1,4 @@
-package com.learnrush.model;
+package com.learnrush.loginandregister.model;
 
 /**
  * LearnRush Created by Mohammed Fareed on 4/10/2017.

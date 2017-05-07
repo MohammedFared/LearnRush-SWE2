@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_games"
-    android:name="com.learnrush.GamesFragment"
+    android:name="com.learnrush.gamesList.view.GamesFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.learnrush.Home"
+    tools:context="com.learnrush.gamesList.view.Home"
     tools:layout="@layout/fragment_games" />

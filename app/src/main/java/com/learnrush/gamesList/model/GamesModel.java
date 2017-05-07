@@ -1,4 +1,4 @@
-package com.learnrush.model;
+package com.learnrush.gamesList.model;
 
 /**
  * LearnRush Created by Mohammed Fareed on 4/11/2017.

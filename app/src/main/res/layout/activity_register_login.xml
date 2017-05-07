@@ -8,7 +8,7 @@
     android:id="@+id/ll_signup_container"
     android:padding="16dp"
     android:background="#f5f5f5"
-    tools:context="com.learnrush.RegisterLoginActivity">
+    tools:context="com.learnrush.loginandregister.view.RegisterLoginActivity">
 
     <ImageView
         android:layout_marginTop="16dp"

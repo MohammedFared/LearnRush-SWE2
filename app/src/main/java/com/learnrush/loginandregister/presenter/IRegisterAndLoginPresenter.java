@@ -1,6 +1,6 @@
-package com.learnrush.presenter;
+package com.learnrush.loginandregister.presenter;
 
-public interface RegisterInterFace{
+public interface IRegisterAndLoginPresenter {
     void onCreate();
     void onButtonClick(String name, String mail, String password, String phone, String age, boolean isLogin);
     void onStart();

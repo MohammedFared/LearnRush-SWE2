@@ -1,4 +1,4 @@
-package com.learnrush.presenter;
+package com.learnrush.gamesList.presenter;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.learnrush.R;
-import com.learnrush.model.GamesModel;
+import com.learnrush.addgame.model.GameModel;
 
 /**
  * LearnRush Created by Mohammed Fareed on 4/11/2017.
@@ -27,10 +27,10 @@ import com.learnrush.model.GamesModel;
             ratingTV = (TextView) itemView.findViewById(R.id.tv_rating);
         }
 
-        public void bindViewHolder(GamesModel model){
+        public void bindViewHolder(GameModel model){
             Log.d(TAG, "bindViewHolder: " + model.getGame_name());
             nameTV.setText(model.getGame_name());
-            categoryTV.setText(model.getCategory());
+            categoryTV.setText(model.getGame_cateogry());
             ratingTV.setText(String.valueOf(model.getRating()));
         }
     }

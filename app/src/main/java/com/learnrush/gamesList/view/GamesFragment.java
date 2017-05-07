@@ -1,4 +1,4 @@
-package com.learnrush;
+package com.learnrush.gamesList.view;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,14 +21,17 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.learnrush.model.GamesModel;
-import com.learnrush.presenter.GamesPresenter;
-import com.learnrush.presenter.GamesViewHolder;
+import com.learnrush.R;
+import com.learnrush.addgame.model.GameModel;
+import com.learnrush.addgame.view.AddGame;
+import com.learnrush.gamesList.presenter.GamesPresenter;
+import com.learnrush.gamesList.presenter.GamesViewHolder;
+import com.learnrush.gamesList.presenter.IGamesPresenter;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link GamesFragment.OnFragmentInteractionListener} interface
+ * {@link IGamesPresenter} interface
  * to handle interaction events.
  */
 public class GamesFragment extends Fragment {
@@ -38,11 +41,9 @@ public class GamesFragment extends Fragment {
     private RecyclerView mRecycler;
     private LinearLayoutManager mManager;
 
-    private OnFragmentInteractionListener mListener;
-    private FirebaseRecyclerAdapter mGamesAdapter;
+    private IGamesPresenter mListener;
     private String TAG = "GamesFragmentLOG";
     private static FloatingActionButton fab;
-    static String CLICKED_GAME_KEY = "game_key";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private Query mQuery;
 
@@ -74,9 +75,7 @@ public class GamesFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        GamesPresenter mGamesPresenter = new GamesPresenter(mListener, mView);
-        mListener = mGamesPresenter;
-        FirebaseRecyclerAdapter<GamesModel, GamesViewHolder> mAdapter;
+        mListener =  new GamesPresenter(mView);
 
         // Set up Layout Manager, reverse layout
         mManager = new LinearLayoutManager(getActivity());
@@ -94,7 +93,7 @@ public class GamesFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getContext(), addGame.class));
+                startActivity(new Intent(getContext(), AddGame.class));
             }
         });
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -106,23 +105,21 @@ public class GamesFragment extends Fragment {
     }
 
     private void getGames(final Query query) {
-        FirebaseRecyclerAdapter<GamesModel, GamesViewHolder> mAdapter;
+        FirebaseRecyclerAdapter<GameModel, GamesViewHolder> mAdapter;
         mSwipeRefreshLayout.setRefreshing(true);
-        mAdapter = new FirebaseRecyclerAdapter<GamesModel, GamesViewHolder>
-                (GamesModel.class, R.layout.single_game_item, GamesViewHolder.class, query) {
+        mAdapter = new FirebaseRecyclerAdapter<GameModel, GamesViewHolder>
+                (GameModel.class, R.layout.single_game_item, GamesViewHolder.class, query) {
             @Override
-            protected void populateViewHolder(GamesViewHolder viewHolder, GamesModel model, int position) {
+            protected void populateViewHolder(GamesViewHolder viewHolder, GameModel model, int position) {
                 mSwipeRefreshLayout.setRefreshing(false);
                 Log.d(TAG, "populateViewHolder: ");
-                // On Game Item Click, Go to game Details
+                // On Game Item Click, Go to game Details with the gameKey
                 final DatabaseReference clickedGameRef = getRef(position);
                 final String gameKey = clickedGameRef.getKey();
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(mView.getContext(), GameDetails.class);
-                        intent.putExtra(CLICKED_GAME_KEY, gameKey);
-                        mView.getContext().startActivity(intent);
+                        mListener.OnGameClicked(gameKey);
                     }
                 });
                 // sets the values to the UI
@@ -167,17 +164,4 @@ public class GamesFragment extends Fragment {
         super.onDetach();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onLogOut();
-    }
 }

@@ -1,15 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.learnrush.GameDetails">
+    android:padding="16dp"
+    tools:context="com.learnrush.gamesList.view.GameDetails">
 
-    <TextView
-        android:id="@+id/tv_game_key"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/img_game"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="center"
+            android:src="@drawable/question_background" />
+
+        <TextView
+            android:id="@+id/tv_game_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/img_game"
+            android:padding="16dp"
+            tools:text="Game Name" />
+
+        <TextView
+            android:id="@+id/tv_game_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_game_name"
+            android:layout_toRightOf="@id/img_game"
+            android:paddingLeft="16dp"
+            tools:text="Game Category" />
+
+        <TextView
+            android:id="@+id/tv_game_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/img_game"
+            android:padding="16dp"
+            tools:text="Game Description" />
+
+        <Button
+            android:id="@+id/btn_continue_Questions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/tv_game_desc"
+            android:background="@color/colorPrimary"
+            android:padding="16dp"
+            android:text="Play Game"
+            android:textColor="@android:color/white"
+            android:onClick="onPlayGame"/>
+    </RelativeLayout>
+</ScrollView>
