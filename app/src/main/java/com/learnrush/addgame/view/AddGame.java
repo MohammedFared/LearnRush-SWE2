@@ -27,6 +27,7 @@ public class AddGame extends AppCompatActivity implements AddGameDetailsFragment
         , AddMatchPictureQuestionsFragment.OnFragmentMatchPictureListener {
 
     private ArrayList<GameQuestionsModel> mGameQuestionsArrayList;
+    private final int minQuestionsRequired = 5;
 
     GameModel mGameDetailsModel;
     private int numberOfQuestions = 0;
@@ -80,7 +81,8 @@ public class AddGame extends AppCompatActivity implements AddGameDetailsFragment
         if (gameModel.getGame_cateogry().equals(MultipleChoiceOption)){
             newMultipleChoiceFragment();
         } else if(gameModel.getGame_cateogry().equals(MatchpicturesOption)){
-            newMatchPictureFragment();
+//            newMatchPictureFragment();
+            Toast.makeText(this, "This game category, Is coming soon isa", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "This game category, Is coming soon isa", Toast.LENGTH_SHORT).show();
         }
@@ -115,7 +117,7 @@ public class AddGame extends AppCompatActivity implements AddGameDetailsFragment
             //remove last question
             if (getFragmentManager().getBackStackEntryCount() > 1) {
                 mGameQuestionsArrayList.remove(mGameQuestionsArrayList.size() - 1);
-                mQuestionsCounterTV.setText(getString(R.string.questions_counter_text) + " " + mGameQuestionsArrayList.size());
+                updateQuestionsCounterView();
             }
             getFragmentManager().popBackStack();
         } else {
@@ -123,23 +125,27 @@ public class AddGame extends AppCompatActivity implements AddGameDetailsFragment
         }
     }
 
+    private void updateQuestionsCounterView() {
+        mQuestionsCounterTV.setText(getString(R.string.questions_counter_text) + " " + mGameQuestionsArrayList.size());
+    }
+
     @Override
     public void onContinueMultipleChoiceClicked(GameQuestionsModel gameQuestionsModel) {
-        if(mGameQuestionsArrayList.size() >= 3) {
+        if(mGameQuestionsArrayList.size() >= minQuestionsRequired) {
             doneBtn.setVisibility(View.VISIBLE);
         }
         mGameQuestionsArrayList.add(gameQuestionsModel);
-        mQuestionsCounterTV.setText(getString(R.string.questions_counter_text) + " " + mGameQuestionsArrayList.size());
+        updateQuestionsCounterView();
         newMultipleChoiceFragment();
     }
 
     @Override
     public void onContinueMatchPictureClicked(GameQuestionsModel gameQuestionsModel) {
-        if(mGameQuestionsArrayList.size() >= 3) {
+        if(mGameQuestionsArrayList.size() >= minQuestionsRequired) {
             doneBtn.setVisibility(View.VISIBLE);
         }
         mGameQuestionsArrayList.add(gameQuestionsModel);
-        mQuestionsCounterTV.setText(getString(R.string.questions_counter_text) + " " + mGameQuestionsArrayList.size());
+        updateQuestionsCounterView();
         newMatchPictureFragment();
     }
 }

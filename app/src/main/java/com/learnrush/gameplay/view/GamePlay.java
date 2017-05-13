@@ -18,6 +18,7 @@ import com.learnrush.R;
 import com.learnrush.addgame.model.GameQuestionsModel;
 import com.learnrush.gameplay.presenter.GamePlayPresenterImpl;
 import com.learnrush.gameplay.presenter.IGamePlayPresenter;
+import com.learnrush.gamesList.presenter.GamesPresenter;
 
 import java.util.ArrayList;
 
@@ -27,11 +28,15 @@ public class GamePlay extends AppCompatActivity implements IGamePlayView,
     IGamePlayPresenter mIGamePlayPresenter;
     private TextView scoreTextView;
     private String TAG = "GAMEPLAYLOG";
+    private String gameKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_play);
+
+        if (getIntent() != null)
+            gameKey = getIntent().getStringExtra(GamesPresenter.CLICKED_GAME_KEY);
 
         scoreTextView = (TextView) findViewById(R.id.tv_score);
 
@@ -41,13 +46,16 @@ public class GamePlay extends AppCompatActivity implements IGamePlayView,
 
     public void fetchData() {
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
-        mRef.child("game_questions").addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.child("game_questions").child(gameKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 GameQuestionsModel questionsModel;
                 ArrayList<GameQuestionsModel> gameQuestionsArrayList = new ArrayList<GameQuestionsModel>();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){ // Read the questions and put it in the arrayList
-                    questionsModel = snapshot.getValue(GameQuestionsModel.class);
+                    questionsModel = new GameQuestionsModel();
+                    questionsModel.setQuestion(snapshot.getKey());
+                    questionsModel.setAnswer(snapshot.getValue().toString());
+//                    questionsModel = snapshot.getValue(GameQuestionsModel.class);
                     gameQuestionsArrayList.add(questionsModel);
                 }
                 mIGamePlayPresenter.onDataFetch(gameQuestionsArrayList);
@@ -97,6 +105,7 @@ public class GamePlay extends AppCompatActivity implements IGamePlayView,
         updateScoreView(mIGamePlayPresenter.getmScore());
 
         DialogFragment dialogFragment = CustomDialog.newInstance(isRightAnswer, rightAnswer);
+        dialogFragment.setCancelable(false);
         dialogFragment.show(getSupportFragmentManager(), "NoticeDialogFragment");
     }
 
@@ -106,7 +115,7 @@ public class GamePlay extends AppCompatActivity implements IGamePlayView,
 
     @Override
     public void onDialogPositiveClick() {
-        //todo: start new Question if there is more questions
+        //completed: start new Question if there is more questions
         startNextQuestion();
     }
 

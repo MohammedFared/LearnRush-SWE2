@@ -27,13 +27,12 @@ public class GameDetails extends AppCompatActivity implements IGameDetailsView{
     TextView categoryTextView, nameTextView, descriptionTextView;
     ImageView imageView;
     IGameDetailsPresenter mIGameDetailsPresenter;
-    private String TAG = "GameDetailsLOG";
+    private String TAG = "GameDetailsLOG", gameKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_details);
-        String gameKey = "";
         if (getIntent() != null)
             gameKey = getIntent().getStringExtra(GamesPresenter.CLICKED_GAME_KEY);
 
@@ -79,6 +78,6 @@ public class GameDetails extends AppCompatActivity implements IGameDetailsView{
     }
 
     public void onPlayGame(View view) {
-        startActivity(new Intent(this, GamePlay.class));
+        startActivity(new Intent(this, GamePlay.class).putExtra(GamesPresenter.CLICKED_GAME_KEY, gameKey));
     }
 }

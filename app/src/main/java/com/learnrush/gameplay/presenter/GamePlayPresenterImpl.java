@@ -82,7 +82,7 @@ public class GamePlayPresenterImpl implements IGamePlayPresenter {
         }
     }
 
-    public String[] generateAnswers(int questionIndex) {
+    private String[] generateAnswers(int questionIndex) {
         int size = mQuestionsArrayList.size();
         Random random = new Random();
         String answers[] = new String[4];
@@ -97,10 +97,10 @@ public class GamePlayPresenterImpl implements IGamePlayPresenter {
             indices.add(i);
         Collections.shuffle(indices);
 
-        for (int i = 0; i<3 ; i++) {
-            if(i != rightAnswerRandomIndex) {
-                if (indices.get(i) == questionIndex) {
-                    answers[i] = mAnswersArrayList.get(indices.get(3));
+        for (int i = 0; i<4 ; i++) {
+            if(i != rightAnswerRandomIndex) { // checks if it's the index that we randomly chose for the right answer
+                if (indices.get(i) == questionIndex) { //checks if
+                    answers[i] = mAnswersArrayList.get(indices.get(4));
                 } else {
                     answers[i] = mAnswersArrayList.get(indices.get(i));
                 }

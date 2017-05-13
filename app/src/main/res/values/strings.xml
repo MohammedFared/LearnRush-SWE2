@@ -22,9 +22,9 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="login_message">Already A member? Login.</string>
     <string name="register_message">Don\'t have an account? Register.</string>
-    <string name="questions_counter_text">*You should enter at least 4 questions \nYou entered </string>
+    <string name="questions_counter_text">*You should enter at least 5 questions \nYou entered </string>
     <string name="submit">Submit</string>
-    <string name="wrog_answer_dialog_message">Right answer: %s</string>
+    <string name="wrog_answer_dialog_message">Not so right answer\nThe right one: %s</string>
     <string name="right_answer_dialog_message">Right answer</string>
 
     <string-array name="CATEGORY_ARRAY">

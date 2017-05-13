@@ -68,8 +68,18 @@ public class CustomDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        view = getActivity().getLayoutInflater().inflate(R.layout.custom_dialog, null);
+        ImageView imageView = (ImageView) view.findViewById(R.id.img_dialog);
+        TextView textView = (TextView) view.findViewById(R.id.tv_dialog_message);
+        if (mIsRightAnswer) {
+            imageView.setImageResource(R.drawable.ic_right_black_24dp);
+            textView.setText(R.string.right_answer_dialog_message);
+        } else {
+            imageView.setImageResource(R.drawable.ic_wrong_black_24dp);
+            textView.setText(String.format(getString(R.string.wrog_answer_dialog_message), mRightAnswer));
+        }
         builder.setView(view)
-                .setCancelable(false)
+                .setCancelable(true)
                 .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

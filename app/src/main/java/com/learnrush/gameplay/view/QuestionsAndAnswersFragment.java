@@ -14,8 +14,6 @@ import android.widget.TextView;
 
 import com.learnrush.R;
 
-import static com.google.android.gms.internal.zzs.TAG;
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -24,7 +22,7 @@ import static com.google.android.gms.internal.zzs.TAG;
  * Use the {@link QuestionsAndAnswersFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class QuestionsAndAnswersFragment extends Fragment {
+public class QuestionsAndAnswersFragment extends Fragment implements View.OnClickListener{
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_Question = "param1";
     private static final String ARG_Answers = "param2";
@@ -35,6 +33,10 @@ public class QuestionsAndAnswersFragment extends Fragment {
 
     TextView questionTV;
     RadioGroup answersRG;
+    RadioButton answer1;
+    RadioButton answer2;
+    RadioButton answer3;
+    RadioButton answer4;
 
     private OnFragmentInteractionListener mListener;
     private String mSelectedAnswer;
@@ -76,12 +78,17 @@ public class QuestionsAndAnswersFragment extends Fragment {
 
         answersRG = (RadioGroup) view.findViewById(R.id.rg_answers);
         questionTV = (TextView) view.findViewById(R.id.tv_question);
+        answer1 = (RadioButton) view.findViewById(R.id.radio_a1);
+        answer2 = (RadioButton) view.findViewById(R.id.radio_a2);
+        answer3 = (RadioButton) view.findViewById(R.id.radio_a3);
+        answer4 = (RadioButton) view.findViewById(R.id.radio_a4);
+        answer1.setOnClickListener(this);
+        answer3.setOnClickListener(this);
+        answer2.setOnClickListener(this);
+        answer4.setOnClickListener(this);
         view.findViewById(R.id.btn_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int selectedId = answersRG.getCheckedRadioButtonId();
-                RadioButton radioButton = (RadioButton) view.findViewById(selectedId);
-                mSelectedAnswer = radioButton.getText().toString();
                 onSubmitPressed(mSelectedAnswer);
             }
         });
@@ -122,6 +129,20 @@ public class QuestionsAndAnswersFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if (id == R.id.radio_a1) {
+            mSelectedAnswer = answer1.getText().toString();
+        } else if (id == R.id.radio_a2) {
+            mSelectedAnswer = answer2.getText().toString();
+        } else if (id == R.id.radio_a3) {
+            mSelectedAnswer = answer3.getText().toString();
+        } else if (id == R.id.radio_a4) {
+            mSelectedAnswer = answer4.getText().toString();
+        }
     }
 
     /**
