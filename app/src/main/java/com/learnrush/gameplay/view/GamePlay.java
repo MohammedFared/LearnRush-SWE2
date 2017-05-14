@@ -1,5 +1,7 @@
 package com.learnrush.gameplay.view;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +21,7 @@ import com.learnrush.addgame.model.GameQuestionsModel;
 import com.learnrush.gameplay.presenter.GamePlayPresenterImpl;
 import com.learnrush.gameplay.presenter.IGamePlayPresenter;
 import com.learnrush.gamesList.presenter.GamesPresenter;
+import com.learnrush.gamesList.view.Home;
 
 import java.util.ArrayList;
 
@@ -29,6 +32,7 @@ public class GamePlay extends AppCompatActivity implements IGamePlayView,
     private TextView scoreTextView;
     private String TAG = "GAMEPLAYLOG";
     private String gameKey;
+    private int mNumberOfQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +49,12 @@ public class GamePlay extends AppCompatActivity implements IGamePlayView,
     }
 
     public void fetchData() {
+        showProgressDialog("Loading questions ...");
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
         mRef.child("game_questions").child(gameKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                hideProgressDialog();
                 GameQuestionsModel questionsModel;
                 ArrayList<GameQuestionsModel> gameQuestionsArrayList = new ArrayList<GameQuestionsModel>();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){ // Read the questions and put it in the arrayList
@@ -58,6 +64,7 @@ public class GamePlay extends AppCompatActivity implements IGamePlayView,
 //                    questionsModel = snapshot.getValue(GameQuestionsModel.class);
                     gameQuestionsArrayList.add(questionsModel);
                 }
+                mNumberOfQuestions = gameQuestionsArrayList.size();
                 mIGamePlayPresenter.onDataFetch(gameQuestionsArrayList);
                 Log.d(TAG, "onDataChange: ");
                 startNextQuestion();
@@ -121,6 +128,26 @@ public class GamePlay extends AppCompatActivity implements IGamePlayView,
 
     private void onGameFinished() {
         //TODO: Show dialog to go to end the game and show him his score
-        Toast.makeText(this, "Game Done", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Game Done Your score: " +
+                mIGamePlayPresenter.getmScore() + " / " + mNumberOfQuestions, Toast.LENGTH_LONG).show();
+        startActivity(new Intent(this, Home.class));
+        finish();
+    }
+
+    private ProgressDialog mProgressDialog;
+
+    public void showProgressDialog(String message) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(message);
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
+    }
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
     }
 }

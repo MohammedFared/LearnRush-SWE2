@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.learnrush.addgame.model.GameModel;
+import com.learnrush.gamesList.model.CommentsModel;
 import com.learnrush.gamesList.view.IGameDetailsView;
 
 /**
@@ -45,5 +46,11 @@ public class GameDetailsPresenterImpl implements IGameDetailsPresenter {
     @Override
     public void onStartGameClicked(String gameKey) {
 
+    }
+
+    @Override
+    public void onAddCommentClicked(CommentsModel commentsModel, String gameKey) {
+        DatabaseReference gameCommentsRef = FirebaseDatabase.getInstance().getReference().child("game_comments");
+        gameCommentsRef.child(gameKey).push().setValue(commentsModel);
     }
 }

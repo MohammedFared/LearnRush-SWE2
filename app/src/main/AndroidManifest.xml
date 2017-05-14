@@ -21,7 +21,7 @@
         <activity android:name=".gamesList.view.Home" />
         <activity android:name=".gamesList.view.GameDetails" />
         <activity android:name=".addgame.view.AddGame" />
-        <activity android:name=".gameplay.view.GamePlay"></activity>
+        <activity android:name=".gameplay.view.GamePlay"/>
     </application>
 
 </manifest>

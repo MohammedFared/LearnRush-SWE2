@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.learnrush.R;
 import com.learnrush.addgame.model.GameModel;
+import com.squareup.picasso.Picasso;
 
 /**
  * LearnRush Created by Mohammed Fareed on 4/11/2017.
@@ -32,5 +33,8 @@ import com.learnrush.addgame.model.GameModel;
             nameTV.setText(model.getGame_name());
             categoryTV.setText(model.getGame_cateogry());
             ratingTV.setText(String.valueOf(model.getRating()));
+            Picasso.with(itemView.getContext())
+                    .load(model.getImage())
+                    .into(gameImage);
         }
     }

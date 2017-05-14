@@ -5,7 +5,6 @@ package com.learnrush.loginandregister.view;
  */
 
 public interface IView {
-
     void showProgressDialog(String message);
     void hideProgressDialog();
 }

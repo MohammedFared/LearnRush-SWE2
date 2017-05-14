@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -41,7 +42,7 @@ public class AddGamePresenterImpl implements IAddGamePresenter {
         mContext = context;
     }
 
-    private String uploadGameImage(String imagePath, String gameKey){
+    private String uploadGameImage(String imagePath, final String gameKey, final GameModel gameDetailsModel, final ArrayList<GameQuestionsModel> mGameQuestionsArrayList){
         final String[] downloadUrlar = new String[1];
 
         Uri uri = Uri.parse(imagePath);
@@ -52,7 +53,10 @@ public class AddGamePresenterImpl implements IAddGamePresenter {
                         // Get a URL to the uploaded content
                         String downloadUrl = taskSnapshot.getDownloadUrl().toString();
                         downloadUrlar[0] = downloadUrl;
-                        Log.d(TAG, "onSuccess: " + downloadUrl);
+                        gameDetailsModel.setImage(downloadUrl);
+
+                        // Push the map to firebase all at Once
+                        uploadGameToFirebase(gameDetailsModel, gameKey, mGameQuestionsArrayList);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -70,14 +74,23 @@ public class AddGamePresenterImpl implements IAddGamePresenter {
     @Override
     public void onAddGameClicked(ArrayList<GameQuestionsModel> mGameQuestionsArrayList, GameModel gameDetailsModel) {
         //COMPLETED: add the data to firebase and return to home
+        Toast.makeText(mContext, "Game will be added shortly", Toast.LENGTH_SHORT).show();
+        /*
+         * we need to call the uploadGameImage and when it's finished it's going to call the
+         * push the game after getting the download link for the game image
+         */
+        String gameKey = myRef.child("games").push().getKey();
+        uploadGameImage(gameDetailsModel.getImage(), gameKey, gameDetailsModel, mGameQuestionsArrayList);
 
+    }
+
+    private void uploadGameToFirebase(GameModel gameDetailsModel, String gameKey, ArrayList<GameQuestionsModel> mGameQuestionsArrayList) {
         Map<String, Object> childUpdates = new HashMap<>();
         //*** START Add game details
-        String uId = Utils.user.getUid();
+        String uId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         gameDetailsModel.setTeacher_id(uId); //add the teacher id to the model
-        String gameKey = myRef.child("games").push().getKey();
-        uploadGameImage(gameDetailsModel.getImage(), gameKey);
+
         Map<String, Object> gameValues = gameDetailsModel.toMap();
 
         childUpdates.put("/games/" + gameKey, gameValues);
@@ -96,13 +109,11 @@ public class AddGamePresenterImpl implements IAddGamePresenter {
         childUpdates.put("/game_answers/" + gameKey, answersMap);
         childUpdates.put("/game_questions/" + gameKey, questionsMap);
         //*** END Add game questions
-
-        // Push the map to firebase all at Once
         myRef.updateChildren(childUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (!task.isSuccessful())
-                    Toast.makeText(mContext, "The game is not added, Please check your connection and try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "The game is not added, Please check your connection and try again", Toast.LENGTH_LONG).show();
                 else {
                     Toast.makeText(mContext, "Game added successfully", Toast.LENGTH_SHORT).show();
                     //TODO: return to home
